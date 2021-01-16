@@ -26,24 +26,23 @@ var getUserRepos = function (user) {
     var apiUrl = "https://api.github.com/users/" + user + "/repos";
 
     // Make a request to the url
-    fetch(apiUrl).then(function (response) {
-        response.json().then(function (data) {
-            // After response data is converted to JSON, pass it to displayRepos() along with user
+    fetch(apiUrl).then(function(response) {
+        //if user exists, and response is ok pulle data from api
+        if (response.ok) {
+          response.json().then(function(data) {
             displayRepos(data, user);
-            //console.log(data);
-        });
-
-    });
+          });
+        } else {
+          alert("Error: " + response.statusText);
+        }
+      });
 };
 
 // Display Repo data
 var displayRepos = function (repos, searchTerm) {
-    //console.log(repos);
-    //console.log(searchTerm);
-
     // Clear old search content from page
     repoContainerEl.textContent = "";
-    //display user name that matches the searched term "username" 
+    //match searched name to username and display
     repoSearchTerm.textContent = searchTerm;
 
     // loop over repos
@@ -59,7 +58,7 @@ var displayRepos = function (repos, searchTerm) {
         var titleEl = document.createElement("span");
         titleEl.textContent = repoName;
 
-        // create a status element
+        // create a span element to hold issue status
         var statusEl = document.createElement("span");
         statusEl.classList = "flex-row align-center";
 
@@ -67,17 +66,16 @@ var displayRepos = function (repos, searchTerm) {
         if (repos[i].open_issues_count > 0) {
             statusEl.innerHTML =
                 "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + " issue(s)";
-                console.log(statusEl.innerHTML)
         } else {
             statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
         }
-
+        //append statusEl to parent element repoEl
+        repoEl.appendChild(statusEl);
         // append span element(s) to repo container(s)
         repoEl.appendChild(titleEl);
-
         // append repo container(s) to repoContainerEl DOM element
         repoContainerEl.appendChild(repoEl);
-    }
+    } console.log(repoEl.innerHTML);
 };
 
 //event-listener to execute formSubmiteHandle() upon form submisssion
