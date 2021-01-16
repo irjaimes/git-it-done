@@ -12,6 +12,8 @@ var formSubmitHandler = function (event) {
     if (username) {
         //pass the username value into getUserRepos() to get that user's data
         getUserRepos(username);
+        // clear old content
+        repoContainerEl.textContent = '';
         //set value of nameInputEl to whatever is submitted
         nameInputEl.value = "";
     } else {
@@ -26,22 +28,31 @@ var getUserRepos = function (user) {
     var apiUrl = "https://api.github.com/users/" + user + "/repos";
 
     // Make a request to the url
-    fetch(apiUrl).then(function(response) {
+    fetch(apiUrl).then(function (response) {
         //if user exists, and response is ok pulle data from api
         if (response.ok) {
-          response.json().then(function(data) {
-            displayRepos(data, user);
-          });
+            response.json().then(function (data) {
+                console.log(data);
+                displayRepos(data, user);
+            });
         } else {
-          alert("Error: " + response.statusText);
+            alert("Error: " + response.statusText);
         }
-      });
+    })
+        .catch(function (error) {
+            // Notice this `.catch()` getting chained onto the end of the `.then()` method
+            alert("Unable to connect to GitHub");
+        });
 };
 
 // Display Repo data
 var displayRepos = function (repos, searchTerm) {
-    // Clear old search content from page
-    repoContainerEl.textContent = "";
+    // check if api returned any repos
+    if (repos.length === 0) {
+        repoContainerEl.textContent = "No repositories found.";
+        return;
+    }
+
     //match searched name to username and display
     repoSearchTerm.textContent = searchTerm;
 
@@ -57,6 +68,8 @@ var displayRepos = function (repos, searchTerm) {
         // create a span element to hold repository name
         var titleEl = document.createElement("span");
         titleEl.textContent = repoName;
+        // append span element(s) to repo container(s)
+        repoEl.appendChild(titleEl);
 
         // create a span element to hold issue status
         var statusEl = document.createElement("span");
@@ -71,11 +84,10 @@ var displayRepos = function (repos, searchTerm) {
         }
         //append statusEl to parent element repoEl
         repoEl.appendChild(statusEl);
-        // append span element(s) to repo container(s)
-        repoEl.appendChild(titleEl);
+
         // append repo container(s) to repoContainerEl DOM element
         repoContainerEl.appendChild(repoEl);
-    } console.log(repoEl.innerHTML);
+    }
 };
 
 //event-listener to execute formSubmiteHandle() upon form submisssion
