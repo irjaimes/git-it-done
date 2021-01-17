@@ -1,6 +1,28 @@
 var issueContainerEl = document.querySelector("#issues-container");
 var limitWarningEl = document.querySelector("#limit-warning");
+var repoNameEl = document.querySelector("#repo-name")
 
+// Extract Repo Name from search query 
+var getRepoName = function () {
+    //use document location to extract query value from search
+    var queryString = document.location.search;
+    //Use split method to remove the = sign and get username and repo name only
+    var repoName = queryString.split("=")[1];
+    //console.log(repoName);
+    if (repoName) { //if repoName exists = true
+        //display repo name 
+        repoNameEl.textContent = repoName;
+
+        //pass repoName into getRepoIssues to fetch the related isssues from GitHub API issue point
+        getRepoIssues(repoName);
+    }
+    else { //if repoName doesnt exist, re-direct to home page
+        document.location.replace("./index.html");
+      }
+}
+
+
+// Fetch issues from api URL
 var getRepoIssues = function (repo) {
     console.log(repo);
 
@@ -21,12 +43,15 @@ var getRepoIssues = function (repo) {
             });
         }
         else {
-            alert("There was a problem with your request!");
+            //if not sucessful, re-direct to home page
+            document.location.replace("./index.html");;
         }
     });
 };
 
-getRepoIssues("expressjs/express");
+
+
+
 
 // Create DOM elements to display issues responses
 var displayIssues = function (issues) {
@@ -80,3 +105,6 @@ var displayWarning = function (repo) {
     // append to warning container
     limitWarningEl.appendChild(linkEl);
 };
+
+
+getRepoName();
