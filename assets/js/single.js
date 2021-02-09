@@ -51,8 +51,6 @@ var getRepoIssues = function (repo) {
 
 
 
-
-
 // Create DOM elements to display issues responses
 var displayIssues = function (issues) {
     //check if repo has any issues
