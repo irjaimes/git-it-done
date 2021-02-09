@@ -115,7 +115,6 @@ var buttonClickHandler = function(event) {
         // clear old content
         repoContainerEl.textContent = "";
       }
-
 }
 
 //event-listener to execute formSubmiteHandle() upon form submisssion
